@@ -1,12 +1,26 @@
 #include <iostream>
 
-#include <Socket.h>
+#include <TcpReader.h>
 
-#include <sys/socket.h>
+#include <cstddef>
+#include <string_view>
 
 int main() {
-	Socket sock1(AF_INET, SOCK_STREAM, 0);
+	TcpReader out1("127.0.0.1", 4001);
+	TcpReader out2("127.0.0.1", 4002);
+	TcpReader out3("127.0.0.1", 4003);
 
-	std::cout << "client1" << std::endl;
+	std::byte buffer[16];
+	size_t bytes = 0;
+
+	bytes = out1.Read(buffer, sizeof(buffer));
+	std::cout << std::string_view(reinterpret_cast<const char*>(buffer), bytes);
+
+	bytes = out2.Read(buffer, sizeof(buffer));
+	std::cout << std::string_view(reinterpret_cast<const char*>(buffer), bytes);
+
+	bytes = out3.Read(buffer, sizeof(buffer));
+	std::cout << std::string_view(reinterpret_cast<const char*>(buffer), bytes);
+
 	return 0;
 }
