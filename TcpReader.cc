@@ -2,6 +2,7 @@
 
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <fcntl.h>
 
 #include <stdexcept>
 
@@ -19,9 +20,21 @@ TcpReader::TcpReader(const std::string& address, uint16_t port) : Socket(AF_INET
 	if (ret != 0) {
 		throw std::runtime_error("Failed to connect");
 	}
+
+	// Set socket to non-blocking mode
+	int flags = fcntl(fd_, F_GETFL, 0);
+	if (flags < 0) {
+		throw std::runtime_error("Failed to get file descriptor flags");
+	}
+	if (fcntl(fd_, F_SETFL, flags | O_NONBLOCK) < 0) {
+		throw std::runtime_error("Failed to set socket to non-blocking mode");
+	}
 }
 
 size_t TcpReader::Read(std::byte* buffer, size_t buffer_size) {
 	ssize_t bytes = recv(fd_, buffer, buffer_size, 0);
-	return static_cast<size_t>(bytes); // TODO
+	if (bytes <= 0) { // EAGAIN, EWOULDBLOCK
+		return 0;
+	}
+	return static_cast<size_t>(bytes);
 }
