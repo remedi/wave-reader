@@ -13,7 +13,7 @@ TcpReader::TcpReader(const std::string& address, uint16_t port) : Socket(AF_INET
 
 	int ret = inet_pton(AF_INET, address.c_str(), &sa.sin_addr);
 	if (ret <= 0) {
-		throw std::runtime_error("Invalid address");
+		throw std::invalid_argument("Invalid address");
 	}
 
 	ret = connect(fd_, reinterpret_cast<struct sockaddr*>(&sa), sizeof(sa));
