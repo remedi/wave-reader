@@ -1,11 +1,14 @@
 #include <iostream>
 
+#include <ControlProtocol.h>
 #include <TcpReader.h>
 #include <UdpWriter.h>
+#include <Utils.h>
 
 #include <algorithm>
 #include <chrono>
 #include <cstddef>
+#include <optional>
 #include <string_view>
 #include <thread>
 
@@ -49,6 +52,8 @@ int main() {
 	auto sample_time = steady_start + sample_interval;
 	auto print_time = steady_start + print_interval;
 
+	float out3_old_value = 0.0f;
+
 	// Infinite work loop
 	while (1) {
 		auto now = std::chrono::steady_clock::now();
@@ -79,6 +84,38 @@ int main() {
 			out1 = "--";
 			out2 = "--";
 			out3 = "--";
+		}
+
+		// Task 2: Control output 1 based on value of output 3
+		float out3_value;
+		if (Utils::ParseFloat(out3, out3_value)) {
+			std::optional<uint16_t> frequency;
+			std::optional<uint16_t> amplitude;
+
+			// When the value on the output 3 of the server becomes greater than or equal 3.0:
+			// - Set the frequency of server output 1 to 1Hz.
+			// - Set the amplitude of server output 1 to 8000.
+			if (out3_old_value < 3.0f && out3_value >= 3.0f) {
+				frequency = 1000;
+				amplitude = 8000;
+			}
+			// When the value on the output 3 becomes lower than 3.0:
+			// - Set the frequency of server output 1 to 2Hz.
+			// - Set the amplitude of server output 1 to 4000.
+			else if (out3_old_value >= 3.0f && out3_value < 3.0f) {
+				frequency = 2000;
+				amplitude = 4000;
+			}
+			out3_old_value = out3_value;
+
+			if (frequency.has_value()) {
+				ControlMessage message(MessageOperation_Write, MessageObject_Out1, MessageProperty_Frequency, frequency.value());
+				writer.Write(reinterpret_cast<std::byte*>(&message), message.Size());
+			}
+			if (amplitude.has_value()) {
+				ControlMessage message(MessageOperation_Write, MessageObject_Out1, MessageProperty_Amplitude, amplitude.value());
+				writer.Write(reinterpret_cast<std::byte*>(&message), message.Size());
+			}
 		}
 
 		auto wakeup = std::min(sample_time, print_time);

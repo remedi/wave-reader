@@ -6,6 +6,8 @@ Ideas:
 - JSON formatting might break if server sends quotes or escape characters
 - Socket disconnect is not being handled
 - TcpReader and UdpWriter have similar initialization - merge?
+- There is no error handling or retry logic for failed control messages
+- Floating point conversion of out3 value might break depending on locale
 
 # Task 1
 
