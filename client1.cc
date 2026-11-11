@@ -2,6 +2,7 @@
 
 #include <TcpReader.h>
 
+#include <algorithm>
 #include <chrono>
 #include <cstddef>
 #include <string_view>
@@ -38,20 +39,28 @@ int main() {
 	// Timing
 	const auto steady_start = std::chrono::steady_clock::now();
 	const auto sys_start = std::chrono::system_clock::now();
-	const auto interval = std::chrono::milliseconds(PRINT_RATE_MS);
-	auto activation = steady_start + interval;
+
+	const auto sample_interval = std::chrono::milliseconds(SAMPLE_RATE_MS);
+	const auto print_interval = std::chrono::milliseconds(PRINT_RATE_MS);
+
+	auto sample_time = steady_start + sample_interval;
+	auto print_time = steady_start + print_interval;
 
 	// Infinite work loop
 	while (1) {
-		readValue(reader1, out1);
-		readValue(reader2, out2);
-		readValue(reader3, out3);
-
 		auto now = std::chrono::steady_clock::now();
-		if (now > activation) {
-			activation = activation + interval; // Advance and prevent drift
+		if (now >= sample_time) {
+			sample_time = sample_time + sample_interval;
 
-			auto elapsed = activation - steady_start;
+			readValue(reader1, out1);
+			readValue(reader2, out2);
+			readValue(reader3, out3);
+		}
+
+		if (now >= print_time) {
+			print_time = print_time + print_interval;
+
+			auto elapsed = now - steady_start;
 			auto timestamp = (sys_start + elapsed).time_since_epoch();
 
 			// Adding a JSON library for outputting this is overkill,
@@ -68,7 +77,9 @@ int main() {
 			out2 = "--";
 			out3 = "--";
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(SAMPLE_RATE_MS));
+
+		auto wakeup = std::min(sample_time, print_time);
+		std::this_thread::sleep_until(wakeup);
 	}
 
 	return 0;
