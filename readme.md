@@ -1,3 +1,9 @@
+Ideas:
+- Incoming data might be partial - needs buffering
+- Use epoll instead of manually checking all sockets for data
+- JSON formatting might break if server sends quotes or escape characters
+- Socket disconnect is not being handled
+
 # Task 1
 
 These values were measured using 100ms sampling rate and approximated from data.
