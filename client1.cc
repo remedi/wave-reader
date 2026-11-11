@@ -20,14 +20,17 @@ int main() {
 	std::string out3 = "--";
 
 	auto readValue = [](TcpReader& reader, std::string& out) {
-		std::byte buffer[16];
+		std::byte buffer[32];
 
 		size_t bytes = reader.Read(buffer, sizeof(buffer));
 		if (bytes != 0) {
-			out = std::string_view(reinterpret_cast<const char*>(buffer), bytes);
-			auto lf = out.find('\n');
-			if (lf != std::string::npos) {
-				out.erase(lf);
+			std::string data(reinterpret_cast<const char*>(buffer), bytes);
+
+			// Process data line by line
+			size_t pos;
+			while ((pos = data.find('\n')) != std::string::npos) {
+				out = data.substr(0, pos);
+				data.erase(0, pos + 1);
 			}
 		}
 	};
