@@ -1,8 +1,11 @@
+// TODO, how to build and run
+
 Ideas:
 - Incoming data might be partial - needs buffering
 - Use epoll instead of manually checking all sockets for data
 - JSON formatting might break if server sends quotes or escape characters
 - Socket disconnect is not being handled
+- TcpReader and UdpWriter have similar initialization - merge?
 
 # Task 1
 

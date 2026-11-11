@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <TcpReader.h>
+#include <UdpWriter.h>
 
 #include <algorithm>
 #include <chrono>
@@ -12,6 +13,8 @@
 #define PRINT_RATE_MS 20
 
 int main() {
+	UdpWriter writer("127.0.0.1", 4000);
+
 	TcpReader reader1("127.0.0.1", 4001);
 	TcpReader reader2("127.0.0.1", 4002);
 	TcpReader reader3("127.0.0.1", 4003);
