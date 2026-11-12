@@ -20,7 +20,7 @@ public:
 	~TcpReader() = default;
 
 	/// Read up to N bytes from the reader to a buffer. This call is non-blocking.
-	/// @param buffer Buffer to store the data.
+	/// @param buffer Pointer to a buffer to store the data.
 	/// @param buffer_size Size of the buffer.
 	/// @return Bytes read or 0 if call would be blocked or there is no data.
 	size_t Read(std::byte* buffer, size_t buffer_size);

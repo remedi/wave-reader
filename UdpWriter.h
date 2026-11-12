@@ -20,7 +20,7 @@ public:
 	~UdpWriter() = default;
 
 	/// Send N bytes to the writer from a buffer. This call is non-blocking.
-	/// @param data Buffer from where the data is sent.
+	/// @param data Pointer to a buffer from where the data is sent.
 	/// @param data_size Size of the data.
 	/// @return Bytes sent or 0 if call would be blocked or no data was sent.
 	size_t Write(const std::byte* data, size_t data_length);

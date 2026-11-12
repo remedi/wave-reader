@@ -46,19 +46,19 @@ struct __attribute__((__packed__)) ControlMessage {
 	uint16_t opt_value_;
 	bool has_opt_value_ = false;
 
-	/// @brief Create a ControlProtocol message (used for reading a property)
-	/// @param operation Message operation
-	/// @param object Target of the operation
-	/// @param property Property of the object
+	/// @brief Create a ControlProtocol message (used for reading a property).
+	/// @param operation Message operation.
+	/// @param object Target of the operation.
+	/// @param property Property of the object.
 	ControlMessage(MessageOperation operation, MessageObject object, MessageProperty property)
 		: operation_(htons(operation)), object_(htons(object)), property_(htons(property)) {
 	}
 
-	/// @brief Create a ControlProtocol message with a value (used for writing a property)
-	/// @param operation Message operation
-	/// @param object Target of the operation
-	/// @param property Property of the object
-	/// @param value Value for the property
+	/// @brief Create a ControlProtocol message with a value (used for writing a property).
+	/// @param operation Message operation.
+	/// @param object Target of the operation.
+	/// @param property Property of the object.
+	/// @param value Value for the property.
 	ControlMessage(MessageOperation operation, MessageObject object, MessageProperty property, uint16_t value)
 		: operation_(htons(operation)), object_(htons(object)), property_(htons(property)), opt_value_(htons(value)), has_opt_value_(true) {
 	}
