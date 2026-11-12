@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include <ControlProtocol.h>
 #include <TcpReader.h>
 #include <UdpWriter.h>
@@ -8,8 +6,8 @@
 #include <algorithm>
 #include <chrono>
 #include <cstddef>
+#include <iostream>
 #include <optional>
-#include <string_view>
 #include <thread>
 
 #define SAMPLE_RATE_MS 5
